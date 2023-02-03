@@ -153,7 +153,17 @@
 
 <script>
 export default {
-
+ name:'DashBoard',
+ data() {
+    return {
+        countemas:0
+    }
+ },
+ methods: {
+    async obtenermistemas(){
+        
+    }
+ },
 }
 </script>
 

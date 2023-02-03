@@ -1,11 +1,13 @@
 <script setup>
 import axios from "axios";
-
-
-
 import {
   useTokenClient
 } from "vue3-google-signin";
+
+import { useAuthStore } from '../stores/user';
+const authstore = useAuthStore();
+
+
 
 axios.defaults.withCredentials=true
 const establecssr =async() =>{
@@ -16,39 +18,39 @@ const handleOnSuccess = async (response2) => {
   //  axios.get('http://127.0.0.1:8000/sanctum/csrf-cookie').then(async response => {
     // console.log(response)
   await establecssr()
-   let confe= document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-    console.log(confe)
+
     // let consulta = await axios({
     //   method: 'post',
     //   url: 'http://127.0.0.1:8000/login',
     //   data: {
     //     token: response2.access_token
         
-
+      await authstore.login(response2.access_token)
     //   }
-      let consulta =await axios.post('http://127.0.0.1:8000/login',{token:response2.access_token})
+      // let consulta =await axios.post('http://127.0.0.1:8000/login',{token:response2.access_token})
 
     // })
+      
+    // if (consulta.data.estado) {
+    //   // this.$swal('Hello Vue world!!!');
 
-    if (consulta.data.estado) {
-      // this.$swal('Hello Vue world!!!');
-
-      Swal.fire(
-        'Éxito!',
-        'Te logueaste!',
-        'success'
-      )
+    //   Swal.fire(
+    //     'Éxito!',
+    //     'Te logueaste!',
+    //     'success'
+    //   )
 
 
 
-    } else {
-      // this.$swal('Error!!!');
-      Swal.fire(
-        'Error!',
-        'Ocurrió un error!' + consulta.data.mensaje,
-        'error'
-      )
-    }
+
+    // } else {
+    //   // this.$swal('Error!!!');
+    //   Swal.fire(
+    //     'Error!',
+    //     'Ocurrió un error!' + consulta.data.mensaje,
+    //     'error'
+    //   )
+    // }
 
   // });
 
@@ -109,15 +111,15 @@ const prueba =async ()=>{
                   <form class="row g-3 needs-validation" novalidate>
                     <div class="col-12">
                       <div class="form-check d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                        <!-- <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label> -->
                       </div>
                     </div>
                     <div class="col-12 d-flex justify-content-center">
 
                       <button class="btn btn-success" type="button" :disabled="!isReady" @click="() => login()">Login
                         with Google</button>
-                        <button type="button" @click="prueba()">dsfds</button>
+                        <!-- <button type="button" @click="prueba()">dsfds</button> -->
                     </div>
                     <div class="col-12">
 

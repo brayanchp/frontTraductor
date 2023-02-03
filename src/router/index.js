@@ -9,6 +9,11 @@ const router = createRouter({
       name: 'home',
       component: ()=>import('../components/Inicio.vue')
     },
+    // {
+    //   path:'/login',
+    //   name:'login',
+    //   component:()=>import('../components/Login.vue')
+    // },
     {
       path: '/temas',
       name: 'temas',
@@ -19,6 +24,12 @@ const router = createRouter({
       name: 'registrartema',
       component: ()=>import('../components/temas/MantenimientoTemas.vue')
     },
+    {
+      path:"/editartema/:idtema",
+      name:"editartema",
+      component:()=>import('../components/temas/MantenimientoTemas.vue'),
+      props:true,
+     },
     {
       path:'/evaluaciones',
       name: 'evaluaciones',

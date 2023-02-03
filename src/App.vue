@@ -1,7 +1,8 @@
 <template>
   <div v-if="this.logeado == true" class="">
     <!-- <div> -->
-    <Header />
+      
+    <Header  />
     <!-- <Menu /> -->
      
       <Menu />
@@ -15,18 +16,21 @@
 
   </div>
   <div v-else class="">
-    
+    <!-- <h1>{{ this.user }}</h1> -->
     <Login />
     
 
-  </div>
+  </div> 
 
 </template>
  
-<script>
+<script >
 import { RouterLink, RouterView } from 'vue-router'
 import Login from "./components/Login.vue"
- 
+import { mapStores,mapState,storeToRefs } from 'pinia'
+
+import { useAuthStore } from './stores/user';
+// const authstore = useAuthStore();
 import Header from './components/Header.vue';
 import Menu from './components/Sidebar.vue';
 import Footer from './components/Footer.vue';
@@ -34,6 +38,11 @@ import Footer from './components/Footer.vue';
 // import mixins from './mixins/mixins'
 export default {
   name: 'App',
+  setup() {
+    const store = useAuthStore()
+    const {user} =storeToRefs(store)
+    return {user}
+  },
   components: {
     Header,
     Menu,
@@ -46,6 +55,26 @@ export default {
       usuario: this.$attrs.usuario,
       menu: this.$attrs.principal
     }
+  },
+  methods: {
+    obtenerestado(){
+      
+    }
+    
+  },
+  computed:{
+    // ...mapState(useAuthStore,['user'])
+  },
+  created() {
+    if(this.user==null){
+      this.logeado=false
+    }else{
+      this.logeado=true
+    }
+    // console.log(useAuthStore)
+    // let obtenerUsuario=authstore.user
+    // console.log(obtenerUsuario)
+
   },
 
 }
