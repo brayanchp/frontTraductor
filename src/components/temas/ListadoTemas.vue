@@ -21,11 +21,31 @@
               <div class="container">
                 <div class="row">
                   <div class="col-8">
-                    <h5 class="card-title">Temas</h5>
+                    <!-- <form > -->
+                    <div class="row mb-3">
+                      <label for="inputText" class="col-sm-2 col-form-label">
+                        Nombre:
+                      </label>
+                      <div class="col-sm-10">
+                        <input type="text" v-model="buscar" class="form-control" placeholder="Tema a buscar"
+                          @keyup.enter="busquedaTema()">
+                      </div>
+                    </div>
+                    <!-- </form> -->
                   </div>
                   <div class="col-4">
-                    <router-link to="/registrartema" class="btn btn-primary">Agregar Tema</router-link>
+                    <button class="btn btn-warning ms-3" @click="busquedaTema()">
+                      Buscar
+                    </button>
+                    <router-link to="/registrartema" class="btn btn-primary ms-3">Agregar Tema</router-link>
+
                   </div>
+                </div>
+                <div class="row">
+                  <div class="col-8">
+                    <h5 class="card-title">Temas</h5>
+                  </div>
+
                 </div>
               </div>
 
@@ -38,15 +58,18 @@
                       {{ t.nombre }}
                     </div>
                     <div class="col-4">
-                      <router-link tag="a" title="Editar Tema" :to="{ name: 'editartema', params: { idtema: t.id_tema } }"
-                        class="btn btn-success me-2">
+                      <router-link tag="a" title="Editar Tema"
+                        :to="{ name: 'editartema', params: { idtema: t.id_tema } }" class="btn btn-success me-2">
                         <i class="bi bi-pencil-square"></i>
 
 
                       </router-link>
 
-                      <button class="btn btn-danger me-2">
+                      <button class="btn btn-danger me-2" v-if="t.is_active == 1" @click="desactivarTema(t)">
                         <i class="bi bi-trash"></i>
+                      </button>
+                      <button class="btn btn-info me-2" v-if="t.is_active == 0" @click="activarTema(t)">
+                        <i class="bi bi-arrow-up-circle"></i>
                       </button>
                     </div>
                   </div>
@@ -66,7 +89,8 @@
             <div class="d-flex flex-row justify-content-end me-3">
               <nav aria-label="Page navigation example mt-3">
                 <ul class="pagination pagination-lg">
-                  <li class="page-item" @click="((paramInicio < pageActual && paramInicio > 0) ? buscaTemas('prev') : '')">
+                  <li class="page-item"
+                    @click="((paramInicio < pageActual && paramInicio > 0) ? buscaTemas('prev') : '')">
                     <a class="page-link" href="javascript:void(0);" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                     </a>
@@ -84,27 +108,7 @@
                 </ul>
               </nav>
             </div>
-            <!-- <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-end">
-                <li class="page-item">
-                    <a class="page-link" href="javascript:void(0);" aria-label="total" >
-                        <strong>TOTAL: </strong><span v-text="total"></span>
-                    </a>
-                  </li>
-              
-              <li class="page-item" @click="((paramInicio < pageActual && paramInicio > 0)?buscaAseguradora('prev'):'')">
-                     <a class="page-link" href="javascript:void(0);" aria-label="Previous">«</a>
-              </li>
-             
-              <li v-for="op in opciones" :key="op.opc" :class="(op.opc==pageActual?'page-item active':'page-item')" @click="(op.opc!=pageActual?buscaAseguradora(op.opc):'')" >
-                    <a class="page-link" href="javascript:void(0);" v-text="op.opc"></a>
-             </li>
-             
-               <li class="page-item" @click="((paramFin > pageActual && paramFin >0)?buscaAseguradora('next'):'')">
-                      <a class="page-link" href="javascript:void(0);" aria-label="Next">»</a>
-                </li>
-            </ul>
-          </nav> -->
+
           </div>
 
 
@@ -135,7 +139,8 @@ export default {
       inicio: '',
       fin: '',
       paramInicio: '',
-      paramFin: ''
+      paramFin: '',
+      buscar: ''
     }
   },
   methods: {
@@ -156,11 +161,10 @@ export default {
     async busquedaTema() {
       let me = this
 
-      // let filtro = document.getElementById('filtro-aseguradora').value
       let filtro = ''
-      // let descripcion = document.getElementById('descripcion-aseguradora').value
-      let descripcion = ''
-      // me.filas = document.getElementById('cantidad-aseguradora').value
+
+      let descripcion = me.buscar
+
       me.filas = 1
 
       try {
@@ -176,7 +180,7 @@ export default {
 
         });
 
-        console.log(respuesta.status)
+
         me.temas = respuesta.data.temas
         me.total = respuesta.data.cantidad
         me.pageActual = respuesta.data.page
@@ -200,6 +204,100 @@ export default {
       let me = this
       me.busquedaTema();
     },
+    async desactivarTema(t) {
+      let me = this
+      swal.fire({
+        title: 'Confirmar Operación',
+        html: '¿Seguro que desea desactivar el tema: <strong>' + t.nombre + '</strong> ?' +
+          '<strong> ',
+        // type: 'warning',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Sí, Desactivar',
+        cancelButtonText: 'No, Cancelar',
+        allowOutsideClick: false,
+        // closeOnConfirm: false,
+        // closeOnCancel: false
+      }).then(async function (result) {
+        console.log('esoyacafdsfd');
+        if (result.isConfirmed) {
+          console.log('esoy acaa');
+          let response = await axios({
+            method: 'post',
+            url: 'http://127.0.0.1:8000/api/tema/destroy',
+            data: {
+              'id': t.id_tema,
+              'param': 0,
+            }
+          })
+
+          if (response.data.estado) {
+            setTimeout(function () {
+              swal.fire({
+                title: 'Inactivado!',
+                text: response.data.mensaje,
+                icon: 'success'
+              }).then(async function () {
+                await me.busquedaTema()
+              })
+            }, 500)
+          } else {
+            swal.fire('¡Cancelado!', response.data.mensaje, 'error')
+          }
+        } else {
+          swal.fire('¡Cancelado!', 'Operación Cancelada', 'error')
+        }
+      })
+    },
+
+    async activarTema(t) {
+      let me = this
+
+      swal.fire({
+        title: 'Confirmar Operación',
+        html: '¿Seguro que desea activar el Tema: <strong>' + t.nombre + '</strong> ?' +
+          '<strong> ',
+        // type: 'warning',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'Sí, Activar',
+        cancelButtonText: 'No, Cancelar',
+        allowOutsideClick: false,
+        // closeOnConfirm: false,
+        // closeOnCancel: false
+      }).then(async function (result) {
+
+        if (result.isConfirmed) {
+
+          let response = await axios({
+            method: 'post',
+            url: 'http://127.0.0.1:8000/api/tema/destroy',
+            data: {
+              'id': t.id_tema,
+              'param': 1,
+            }
+          })
+
+          if (response.data.estado) {
+            setTimeout(function () {
+              swal.fire({
+                title: '¡Activado!',
+                text: response.data.mensaje,
+                icon: 'success'
+              }).then(async function () {
+                await me.busquedaTema()
+              })
+            }, 500)
+          } else {
+            swal.fire('¡Cancelado!', response.data.mensaje, 'error')
+          }
+        } else {
+          swal.fire('¡Cancelado!', 'Operación Cancelada', 'error')
+        }
+      })
+    }
   },
   async created() {
     let me = this
@@ -208,23 +306,7 @@ export default {
 
     }, 1000)
   },
-  // async cre() {
-  //   console.log('llegamos')
-  //     //  this.validarSesion()
-  //     //  document.getElementById('filtro-aseguradora').value='nombre'
-  //     //  document.getElementById('descripcion-aseguradora').value=''
-  //     //  document.getElementById('cantidad-aseguradora').value='10'
-  //      this.pageActual=1
-  //     // let e = document.getElementById('sec-lista-aseguradora')
-  //     // e.classList.remove('ocultar')
 
-  //     let me = this
-  //     window.setTimeout( function () {
-  //       me.cargarDatos()
-
-  //     }, 1000)
-
-  //  },
 }
 </script>
 

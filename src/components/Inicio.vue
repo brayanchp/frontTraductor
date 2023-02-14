@@ -45,7 +45,7 @@
                                             <i class="bi bi-cart"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>145</h6>
+                                            <h6>{{ countemas }}</h6>
                                             <!-- <span class="text-success small pt-1 fw-bold">12%</span> <span
                                                 class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -83,7 +83,7 @@
                                             <i class="bi bi-currency-dollar"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>64</h6>
+                                            <h6>{{counttextos }}</h6>
                                             <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span
                                                 class="text-muted small pt-2 ps-1">increase</span> -->
 
@@ -152,18 +152,62 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { mapState, mapActions } from "pinia"
+
+import { useAuthStore } from "../stores/user"
+
 export default {
- name:'DashBoard',
- data() {
-    return {
-        countemas:0
-    }
- },
- methods: {
-    async obtenermistemas(){
-        
-    }
- },
+    name: 'DashBoard',
+    data() {
+        return {
+            countemas: 0,
+            counttextos:0
+        }
+    },
+    methods: {
+        ...mapActions(useAuthStore, ['logout']),
+
+        async obtenermistemas() {
+            let me = this
+            try {
+
+                let response = await axios.get('http://127.0.0.1:8000/api/counttemas')
+
+                me.countemas = response.data.cantidadTemas
+
+            } catch (error) {
+                if (error.response.status == 401 || error.response.status == 419) {
+                    this.logout()
+                    location.href = '/'
+
+                }
+            }
+
+        },
+        async obtenermistextos(){
+            let me = this
+            try {
+
+                let response = await axios.get('http://127.0.0.1:8000/api/counttextos')
+
+                me.counttextos = response.data.cantidadTextos
+
+            } catch (error) {
+                if (error.response.status == 401 || error.response.status == 419) {
+                    this.logout()
+                    location.href = '/'
+
+                }
+            }
+        }
+    },
+    async created() {
+        let me = this
+        await this.obtenermistemas()
+        await this.obtenermistextos()
+
+    },
 }
 </script>
 

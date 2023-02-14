@@ -51,6 +51,12 @@ const router = createRouter({
       component:()=>import('../components/textos/MantenimientoTextos.vue')
     },
     {
+      path:"/editartexto/:idtexto",
+      name:"editartexto",
+      component:()=>import('../components/textos/MantenimientoTextos.vue'),
+      props:true,
+     },
+    {
       path:'/perfil',
       name:'perfil',
       component:()=>import('../components/Perfil.vue')

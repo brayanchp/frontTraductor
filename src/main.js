@@ -9,7 +9,10 @@ import GoogleSignInPlugin from "vue3-google-signin"
 import VueSweetalert2 from 'vue-sweetalert2';
 // import tinymce from 'vue-tinymce-editor'
 import Editor from '@tinymce/tinymce-vue'
+import SimpleTypeahead from 'vue3-simple-typeahead';
 
+
+import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css';
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -30,5 +33,6 @@ app.use(GoogleSignInPlugin, {
   // clientId: '610752097977-rtlldpdc4rmqrhdi6hr36h665qqev31e.apps.googleusercontent.com',
   clientId:'112049544360-uoci5i6gb4qbdjhachlt4os80fdn2cib.apps.googleusercontent.com'
 });
+app.use(SimpleTypeahead)
 //secrecliente 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
 app.mount('#app')
